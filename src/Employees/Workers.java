@@ -47,6 +47,227 @@ int curRow = 0 ;
         Logger.getLogger(Workers.class.getName()).log(Level.SEVERE, null, ex);
     }
 }
+//هذا اكشن للرجوع ال الخلف بالقائمة
+    private void preBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preBtnActionPerformed
+             try {
+                 //التأكد اذا كان هنالك داتا قبل في حالة كان اول اسم لن يكون له اسم سابق فسيظهر له رسالة تنبه
+            if ( rs.previous()) {
+                int id_col = rs.getInt("EM_ID");
+        String id = Integer.toString(id_col);
+        String first_name = rs.getString("First_Name");
+        String last_name = rs.getString("Last_Name");
+        String job = rs.getString("Job_Title");
+        textID.setText(id);
+         textFirst.setText(first_name);
+        textLast.setText(last_name);
+        textJob.setText(job);
+} 
+            else {
+                rs.next();
+                JOptionPane.showMessageDialog(Workers.this, "Start of File"); 
+            }
+        } 
+        catch (SQLException err) { JOptionPane.showMessageDialog(Workers.this, err.getMessage()); }
+    }//GEN-LAST:event_preBtnActionPerformed
+//اكشن زر لرؤية الداتا التالية 
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        try {
+            //في حالة اخر سطر لا يوجد اسم تالي فيسظهر له رسالة انها نهاية الملف
+            if ( rs.next( ) ) {
+                int id_col = rs.getInt("EM_ID");
+        String id = Integer.toString(id_col);
+        String first_name = rs.getString("First_Name");
+        String last_name = rs.getString("Last_Name");
+        String job = rs.getString("Job_Title");
+        textID.setText(id);
+         textFirst.setText(first_name);
+        textLast.setText(last_name);
+        textJob.setText(job);
+} 
+            else {
+                rs.previous( );
+                JOptionPane.showMessageDialog(Workers.this, "End of File"); 
+            }
+        } 
+        catch (SQLException err) { JOptionPane.showMessageDialog(Workers.this, err.getMessage()); }
+    }//GEN-LAST:event_btnNextActionPerformed
+//زر للذهاب الى اول سطر 
+    private void firstBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstBtnActionPerformed
+                    try {
+            rs.first();
+                int id_col = rs.getInt("EM_ID");
+        String id = Integer.toString(id_col);
+        String first_name = rs.getString("First_Name");
+        String last_name = rs.getString("Last_Name");
+        String job = rs.getString("Job_Title");
+        textID.setText(id);
+         textFirst.setText(first_name);
+        textLast.setText(last_name);
+        textJob.setText(job);
+ 
+           
+        } 
+        catch (SQLException err) { JOptionPane.showMessageDialog(Workers.this, err.getMessage()); }
+    }//GEN-LAST:event_firstBtnActionPerformed
+//زر للذهاب الى اخر سطر 
+    private void btnlastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlastActionPerformed
+       try {
+            rs.last();
+                int id_col = rs.getInt("EM_ID");
+        String id = Integer.toString(id_col);
+        String first_name = rs.getString("First_Name");
+        String last_name = rs.getString("Last_Name");
+        String job = rs.getString("Job_Title");
+        textID.setText(id);
+         textFirst.setText(first_name);
+        textLast.setText(last_name);
+        textJob.setText(job);
+ 
+           
+        } 
+        catch (SQLException err) { JOptionPane.showMessageDialog(Workers.this, err.getMessage()); }
+    }//GEN-LAST:event_btnlastActionPerformed
+//زر لتحديث المعلومات
+    private void BtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUpdateActionPerformed
+        String id = textID.getText();
+        String first_name = textFirst.getText();
+        String last_name = textLast.getText();
+        String job = textJob.getText();
+        int newID = Integer.parseInt( id );
+        try { 
+           
+         
+            rs.updateInt( "EM_ID", newID );
+            rs.updateString( "First_Name", first_name);
+            rs.updateString( "last_Name", last_name );
+            rs.updateString( "Job_Title", job );
+            rs.updateRow( ); 
+            JOptionPane.showMessageDialog(Workers.this, "Updated");
+        } 
+        catch (SQLException err) { System.out.println(err.getMessage() ); }
+    }//GEN-LAST:event_BtnUpdateActionPerformed
+//زر للحفظ
+    private void btnsaveNewRecoredActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsaveNewRecoredActionPerformed
+    try {
+        rs.moveToInsertRow( );
+         String id = textID.getText();
+        String first_name = textFirst.getText();
+        String last_name = textLast.getText();
+        String job = textJob.getText();
+        int newID = Integer.parseInt( id );
+         rs.updateInt( "EM_ID", newID );
+            rs.updateString( "First_Name", first_name);
+            rs.updateString( "last_Name", last_name );
+            rs.updateString( "Job_Title", job );
+            //not nessary
+            rs.updateInt("Salary", 0);
+            rs.insertRow( );
+            stmt.close( ); rs.close( );
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+String sql = "SELECT * FROM EMPLOYEES"; rs = stmt.executeQuery(sql);
+rs.next( );
+int id_col = rs.getInt("EM_ID");
+
+        String idn = Integer.toString(id_col);
+        String firstn_name = rs.getString("First_Name");
+        String last_namen = rs.getString("Last_Name");
+        String jobn = rs.getString("Job_Title");
+        textID.setText(idn);
+         textFirst.setText(firstn_name);
+        textLast.setText(last_namen);
+        textJob.setText(jobn);
+            JOptionPane.showMessageDialog(Workers.this, "Inserted");
+            this.addBtn.setEnabled(true);
+        this.btnlast.setEnabled(true);
+        this.preBtn.setEnabled(true);
+        this.btnDelete.setEnabled(true);
+        this.firstBtn.setEnabled(true);
+        this.BtnUpdate.setEnabled(true);
+        this.btnNext.setEnabled(true);
+        this.btnCancelNewRecored.setEnabled(false);
+        btnsaveNewRecored.setEnabled(false);
+    } catch (SQLException ex) {
+        Logger.getLogger(Workers.class.getName()).log(Level.SEVERE, null, ex);
+    }
+       
+    }//GEN-LAST:event_btnsaveNewRecoredActionPerformed
+
+    private void btnCancelNewRecoredActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelNewRecoredActionPerformed
+    try {   
+        rs.absolute( curRow );
+        int id_col = rs.getInt("EM_ID");
+        String id = Integer.toString(id_col);
+        String first_name = rs.getString("First_Name");
+        String last_name = rs.getString("Last_Name");
+        String job = rs.getString("Job_Title");
+        textID.setText(id);
+         textFirst.setText(first_name);
+        textLast.setText(last_name);
+        textJob.setText(job);
+        this.addBtn.setEnabled(true);
+        this.btnlast.setEnabled(true);
+        this.preBtn.setEnabled(true);
+        this.btnDelete.setEnabled(true);
+        this.firstBtn.setEnabled(true);
+        this.BtnUpdate.setEnabled(true);
+        this.btnNext.setEnabled(true);
+        this.btnCancelNewRecored.setEnabled(false);
+        btnsaveNewRecored.setEnabled(false);
+    } catch (SQLException ex) {
+        Logger.getLogger(Workers.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    }//GEN-LAST:event_btnCancelNewRecoredActionPerformed
+//زر لاضافة اسم جديد
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+    try {
+        curRow = rs.getRow();
+        //clearing
+        textID.setText("");
+        textFirst.setText("");
+        textLast.setText("");
+        textJob.setText("");
+        //disabeling Buttons
+        this.addBtn.setEnabled(false);
+        this.btnlast.setEnabled(false);
+        this.preBtn.setEnabled(false);
+        this.btnDelete.setEnabled(false);
+        this.firstBtn.setEnabled(false);
+        this.BtnUpdate.setEnabled(false);
+        this.btnNext.setEnabled(false);
+        this.btnCancelNewRecored.setEnabled(true);
+        btnsaveNewRecored.setEnabled(true);
+    } catch (SQLException ex) {
+        Logger.getLogger(Workers.class.getName()).log(Level.SEVERE, null, ex);
+    }
+        
+        
+        
+    }//GEN-LAST:event_addBtnActionPerformed
+//زر لحذف سطر 
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+    try {
+        rs.deleteRow();
+        stmt.close();
+        rs.close();
+        stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+String sql = "SELECT * FROM Employees"; rs = stmt.executeQuery(sql);
+rs.next( );
+int id_col = rs.getInt("EM_ID");
+
+        String idn = Integer.toString(id_col);
+        String firstn_name = rs.getString("First_Name");
+        String last_namen = rs.getString("Last_Name");
+        String jobn = rs.getString("Job_Title");
+        textID.setText(idn);
+         textFirst.setText(firstn_name);
+        textLast.setText(last_namen);
+        textJob.setText(jobn);
+            JOptionPane.showMessageDialog(Workers.this, "Deleted");
+        
+    } catch (SQLException ex) {
+        Logger.getLogger(Workers.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
@@ -295,227 +516,7 @@ int curRow = 0 ;
     private void textIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textIDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textIDActionPerformed
-//هذا اكشن للرجوع ال الخلف بالقائمة
-    private void preBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preBtnActionPerformed
-             try {
-                 //التأكد اذا كان هنالك داتا قبل في حالة كان اول اسم لن يكون له اسم سابق فسيظهر له رسالة تنبه
-            if ( rs.previous()) {
-                int id_col = rs.getInt("EM_ID");
-        String id = Integer.toString(id_col);
-        String first_name = rs.getString("First_Name");
-        String last_name = rs.getString("Last_Name");
-        String job = rs.getString("Job_Title");
-        textID.setText(id);
-         textFirst.setText(first_name);
-        textLast.setText(last_name);
-        textJob.setText(job);
-} 
-            else {
-                rs.next();
-                JOptionPane.showMessageDialog(Workers.this, "Start of File"); 
-            }
-        } 
-        catch (SQLException err) { JOptionPane.showMessageDialog(Workers.this, err.getMessage()); }
-    }//GEN-LAST:event_preBtnActionPerformed
-//اكشن زر لرؤية الداتا التالية 
-    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        try {
-            //في حالة اخر سطر لا يوجد اسم تالي فيسظهر له رسالة انها نهاية الملف
-            if ( rs.next( ) ) {
-                int id_col = rs.getInt("EM_ID");
-        String id = Integer.toString(id_col);
-        String first_name = rs.getString("First_Name");
-        String last_name = rs.getString("Last_Name");
-        String job = rs.getString("Job_Title");
-        textID.setText(id);
-         textFirst.setText(first_name);
-        textLast.setText(last_name);
-        textJob.setText(job);
-} 
-            else {
-                rs.previous( );
-                JOptionPane.showMessageDialog(Workers.this, "End of File"); 
-            }
-        } 
-        catch (SQLException err) { JOptionPane.showMessageDialog(Workers.this, err.getMessage()); }
-    }//GEN-LAST:event_btnNextActionPerformed
-//زر للذهاب الى اول سطر 
-    private void firstBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstBtnActionPerformed
-                    try {
-            rs.first();
-                int id_col = rs.getInt("EM_ID");
-        String id = Integer.toString(id_col);
-        String first_name = rs.getString("First_Name");
-        String last_name = rs.getString("Last_Name");
-        String job = rs.getString("Job_Title");
-        textID.setText(id);
-         textFirst.setText(first_name);
-        textLast.setText(last_name);
-        textJob.setText(job);
- 
-           
-        } 
-        catch (SQLException err) { JOptionPane.showMessageDialog(Workers.this, err.getMessage()); }
-    }//GEN-LAST:event_firstBtnActionPerformed
-//زر للذهاب الى اخر سطر 
-    private void btnlastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlastActionPerformed
-       try {
-            rs.last();
-                int id_col = rs.getInt("EM_ID");
-        String id = Integer.toString(id_col);
-        String first_name = rs.getString("First_Name");
-        String last_name = rs.getString("Last_Name");
-        String job = rs.getString("Job_Title");
-        textID.setText(id);
-         textFirst.setText(first_name);
-        textLast.setText(last_name);
-        textJob.setText(job);
- 
-           
-        } 
-        catch (SQLException err) { JOptionPane.showMessageDialog(Workers.this, err.getMessage()); }
-    }//GEN-LAST:event_btnlastActionPerformed
-//زر لتحديث المعلومات
-    private void BtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUpdateActionPerformed
-        String id = textID.getText();
-        String first_name = textFirst.getText();
-        String last_name = textLast.getText();
-        String job = textJob.getText();
-        int newID = Integer.parseInt( id );
-        try { 
-           
-         
-            rs.updateInt( "EM_ID", newID );
-            rs.updateString( "First_Name", first_name);
-            rs.updateString( "last_Name", last_name );
-            rs.updateString( "Job_Title", job );
-            rs.updateRow( ); 
-            JOptionPane.showMessageDialog(Workers.this, "Updated");
-        } 
-        catch (SQLException err) { System.out.println(err.getMessage() ); }
-    }//GEN-LAST:event_BtnUpdateActionPerformed
-//زر للحفظ
-    private void btnsaveNewRecoredActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsaveNewRecoredActionPerformed
-    try {
-        rs.moveToInsertRow( );
-         String id = textID.getText();
-        String first_name = textFirst.getText();
-        String last_name = textLast.getText();
-        String job = textJob.getText();
-        int newID = Integer.parseInt( id );
-         rs.updateInt( "EM_ID", newID );
-            rs.updateString( "First_Name", first_name);
-            rs.updateString( "last_Name", last_name );
-            rs.updateString( "Job_Title", job );
-            //not nessary
-            rs.updateInt("Salary", 0);
-            rs.insertRow( );
-            stmt.close( ); rs.close( );
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-String sql = "SELECT * FROM EMPLOYEES"; rs = stmt.executeQuery(sql);
-rs.next( );
-int id_col = rs.getInt("EM_ID");
 
-        String idn = Integer.toString(id_col);
-        String firstn_name = rs.getString("First_Name");
-        String last_namen = rs.getString("Last_Name");
-        String jobn = rs.getString("Job_Title");
-        textID.setText(idn);
-         textFirst.setText(firstn_name);
-        textLast.setText(last_namen);
-        textJob.setText(jobn);
-            JOptionPane.showMessageDialog(Workers.this, "Inserted");
-            this.addBtn.setEnabled(true);
-        this.btnlast.setEnabled(true);
-        this.preBtn.setEnabled(true);
-        this.btnDelete.setEnabled(true);
-        this.firstBtn.setEnabled(true);
-        this.BtnUpdate.setEnabled(true);
-        this.btnNext.setEnabled(true);
-        this.btnCancelNewRecored.setEnabled(false);
-        btnsaveNewRecored.setEnabled(false);
-    } catch (SQLException ex) {
-        Logger.getLogger(Workers.class.getName()).log(Level.SEVERE, null, ex);
-    }
-       
-    }//GEN-LAST:event_btnsaveNewRecoredActionPerformed
-
-    private void btnCancelNewRecoredActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelNewRecoredActionPerformed
-    try {   
-        rs.absolute( curRow );
-        int id_col = rs.getInt("EM_ID");
-        String id = Integer.toString(id_col);
-        String first_name = rs.getString("First_Name");
-        String last_name = rs.getString("Last_Name");
-        String job = rs.getString("Job_Title");
-        textID.setText(id);
-         textFirst.setText(first_name);
-        textLast.setText(last_name);
-        textJob.setText(job);
-        this.addBtn.setEnabled(true);
-        this.btnlast.setEnabled(true);
-        this.preBtn.setEnabled(true);
-        this.btnDelete.setEnabled(true);
-        this.firstBtn.setEnabled(true);
-        this.BtnUpdate.setEnabled(true);
-        this.btnNext.setEnabled(true);
-        this.btnCancelNewRecored.setEnabled(false);
-        btnsaveNewRecored.setEnabled(false);
-    } catch (SQLException ex) {
-        Logger.getLogger(Workers.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    }//GEN-LAST:event_btnCancelNewRecoredActionPerformed
-//زر لاضافة اسم جديد
-    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-    try {
-        curRow = rs.getRow();
-        //clearing
-        textID.setText("");
-        textFirst.setText("");
-        textLast.setText("");
-        textJob.setText("");
-        //disabeling Buttons
-        this.addBtn.setEnabled(false);
-        this.btnlast.setEnabled(false);
-        this.preBtn.setEnabled(false);
-        this.btnDelete.setEnabled(false);
-        this.firstBtn.setEnabled(false);
-        this.BtnUpdate.setEnabled(false);
-        this.btnNext.setEnabled(false);
-        this.btnCancelNewRecored.setEnabled(true);
-        btnsaveNewRecored.setEnabled(true);
-    } catch (SQLException ex) {
-        Logger.getLogger(Workers.class.getName()).log(Level.SEVERE, null, ex);
-    }
-        
-        
-        
-    }//GEN-LAST:event_addBtnActionPerformed
-//زر لحذف سطر 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-    try {
-        rs.deleteRow();
-        stmt.close();
-        rs.close();
-        stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-String sql = "SELECT * FROM Employees"; rs = stmt.executeQuery(sql);
-rs.next( );
-int id_col = rs.getInt("EM_ID");
-
-        String idn = Integer.toString(id_col);
-        String firstn_name = rs.getString("First_Name");
-        String last_namen = rs.getString("Last_Name");
-        String jobn = rs.getString("Job_Title");
-        textID.setText(idn);
-         textFirst.setText(firstn_name);
-        textLast.setText(last_namen);
-        textJob.setText(jobn);
-            JOptionPane.showMessageDialog(Workers.this, "Deleted");
-        
-    } catch (SQLException ex) {
-        Logger.getLogger(Workers.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
      * @param args the command line arguments
